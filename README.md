@@ -11,7 +11,7 @@ Demo (GitHub Pages): https://nguyenphat006.github.io/thiet-ke-web-lhu/
 
 | File | Vai trò |
 | :-- | :-- |
-| `trangchu.html` | Tổng quan ERP: hero, phân hệ, quy trình 5 bước, tồn kho, đơn hàng |
+| `index.html` | Tổng quan ERP: hero, phân hệ, quy trình 5 bước, tồn kho, đơn hàng |
 | `sanxuat.html` | Lệnh sản xuất: bộ lọc xưởng/trạng thái, chế độ Lưới/Danh sách, modal, thẻ lật 3D |
 | `style.css` | Design System (biến `:root`), layout, responsive, animation dùng chung |
 | `prompt_logic.md` | Phân tích logic prompt & lý do chọn hiệu ứng (UX) |
@@ -39,7 +39,7 @@ Các `<input type="radio" class="ctrl">` đặt đầu `<body>`; `<label for>` l
 **Các bước kỹ thuật:**
 1. Đọc bài mẫu → rút ra yêu cầu: tích hợp Tuần 3–5, không JS, có chú thích, có README nhật ký prompt và `prompt_logic.md`.
 2. Giữ các file chung (`LICENSE`, `.vscode/settings.json`), đổi chủ đề sang ERP nội thất (xưởng gỗ, bọc nệm, sơn, lắp ráp; lệnh sản xuất, BOM, tồn kho).
-3. Viết `style.css` (Design System) → `trangchu.html` → `sanxuat.html`.
+3. Viết `style.css` (Design System) → `index.html` → `sanxuat.html`.
 
 ### Lần 2 — Bổ sung thông tin nhóm
 
@@ -68,4 +68,4 @@ Các `<input type="radio" class="ctrl">` đặt đầu `<body>`; `<label for>` l
 `dev` (phát triển) → `staging` (kiểm thử) → `main` (chính thức, tự động deploy).
 
 ## Kiểm thử
-Mở `trangchu.html` bằng trình duyệt; bấm các chip lọc ở `sanxuat.html`; bấm "Xem nhanh" để mở modal; bấm `F12` thử ở kích thước điện thoại / tablet / laptop để kiểm tra responsive.
+Mở `index.html` bằng trình duyệt; bấm các chip lọc ở `sanxuat.html`; bấm "Xem nhanh" để mở modal; bấm `F12` thử ở kích thước điện thoại / tablet / laptop để kiểm tra responsive.
