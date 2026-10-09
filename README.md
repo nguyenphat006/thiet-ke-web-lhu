@@ -1,6 +1,6 @@
 # WoodERP — Hệ thống ERP quản lý sản xuất đồ nội thất
 **Học phần:** Thiết kế Web (111101)
-**Nhóm:** 15 (1 thành viên) — Họ tên: _………_ · MSSV: _………_
+**Nhóm:** 15 (1 thành viên) — Họ tên: Nguyễn Đăng Phát · MSSV: 5266000162
 **Công nghệ:** HTML5 + CSS3 thuần, **Zero JavaScript**, CSS Grid + Flexbox, Responsive Mobile-First
 
 Demo (GitHub Pages): https://nguyenphat006.github.io/thiet-ke-web-lhu/
