@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WoodERP — Danh sách lệnh sản xuất nội thất, lọc theo xưởng và trạng thái.">
+    <title>Lệnh sản xuất — WoodERP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===== CÁC RADIO ĐIỀU KHIỂN BỘ LỌC (ẩn bằng class .ctrl) =====
+         Đặt ở ĐẦU <body> để bộ chọn body:has(#id:checked) trong style.css
+         "nhìn thấy" được trạng thái và ẩn/hiện thẻ ở bất kỳ đâu. KHÔNG dùng JavaScript. -->
+    <!-- Nhóm 1: lọc theo xưởng (cùng name → chỉ chọn 1) -->
+    <input type="radio" name="cat" id="cat-all" class="ctrl" checked>
+    <input type="radio" name="cat" id="cat-go" class="ctrl">
+    <input type="radio" name="cat" id="cat-boc" class="ctrl">
+    <input type="radio" name="cat" id="cat-son" class="ctrl">
+    <input type="radio" name="cat" id="cat-lap" class="ctrl">
+    <!-- Nhóm 2: lọc theo trạng thái -->
+    <input type="radio" name="st" id="st-all" class="ctrl" checked>
+    <input type="radio" name="st" id="st-dang" class="ctrl">
+    <input type="radio" name="st" id="st-cho" class="ctrl">
+    <input type="radio" name="st" id="st-xong" class="ctrl">
+    <!-- Nhóm 3: chế độ xem Lưới / Danh sách -->
+    <input type="radio" name="view" id="view-grid" class="ctrl" checked>
+    <input type="radio" name="view" id="view-list" class="ctrl">
+
+    <a class="skip-link" href="#main-content">Chuyển đến nội dung chính</a>
+
+    <div class="header-wrapper">
+        <header>
+            <div class="container header-inner">
+                <a class="brand" href="trangchu.html" aria-label="WoodERP — Về trang chủ">
+                    <span class="brand-name">Wood<span>ERP</span></span>
+                    <span class="brand-tagline">Furniture Manufacturing Suite</span>
+                </a>
+                <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+                <label for="nav-toggle" class="nav-toggle-label" aria-label="Mở / đóng menu">
+                    <span></span><span></span><span></span>
+                </label>
+                <nav class="main-nav" aria-label="Điều hướng chính">
+                    <ul>
+                        <li><a href="trangchu.html">Tổng quan</a></li>
+                        <li><a href="sanxuat.html" aria-current="page">Lệnh sản xuất</a></li>
+                        <li><a href="trangchu.html#kho-vat-tu">Kho vật tư</a></li>
+                        <li><a href="trangchu.html#don-hang">Đơn hàng</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    </div>
+
+    <main id="main-content">
+
+        <section class="hero" aria-labelledby="page-title">
+            <div class="container hero-inner">
+                <span class="hero-badge">Cập nhật theo ca sản xuất</span>
+                <h1 id="page-title">Lệnh sản xuất <span class="typing">nội thất 2026</span></h1>
+                <p>Lọc theo xưởng và trạng thái, xem tiến độ từng lệnh. Toàn bộ bộ lọc chạy bằng CSS thuần.</p>
+                <div class="kpi-bar">
+                    <div class="kpi"><strong>8</strong><span>Tổng số lệnh</span></div>
+                    <div class="kpi"><strong>4</strong><span>Đang sản xuất</span></div>
+                    <div class="kpi"><strong>2</strong><span>Chờ vật tư</span></div>
+                    <div class="kpi"><strong>2</strong><span>Hoàn thành</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BỐ CỤC 2 CỘT: CSS Grid (Mobile 1 cột → Desktop 280px + 1fr) -->
+        <div class="container layout">
+
+            <!-- CỘT TRÁI: bộ lọc (<aside>); <label for=...> bấm vào = chọn radio tương ứng -->
+            <aside class="filter-panel" aria-label="Bộ lọc lệnh sản xuất">
+                <fieldset class="filter-group">
+                    <legend>Theo xưởng</legend>
+                    <div class="chips">
+                        <label class="chip" for="cat-all">Tất cả</label>
+                        <label class="chip" for="cat-go">🪵 Xưởng gỗ</label>
+                        <label class="chip" for="cat-boc">🛋️ Bọc nệm</label>
+                        <label class="chip" for="cat-son">🎨 Xưởng sơn</label>
+                        <label class="chip" for="cat-lap">🔧 Lắp ráp</label>
+                    </div>
+                </fieldset>
+                <fieldset class="filter-group">
+                    <legend>Theo trạng thái</legend>
+                    <div class="chips">
+                        <label class="chip" for="st-all">Tất cả</label>
+                        <label class="chip" for="st-dang">Đang SX</label>
+                        <label class="chip" for="st-cho">Chờ vật tư</label>
+                        <label class="chip" for="st-xong">Hoàn thành</label>
+                    </div>
+                </fieldset>
+                <!-- Reset: chọn lại radio "Tất cả" của từng nhóm -->
+                <div class="chips">
+                    <label class="chip" for="cat-all">↺ Đặt lại xưởng</label>
+                    <label class="chip" for="st-all">↺ Đặt lại trạng thái</label>
+                </div>
+            </aside>
+
+            <!-- CỘT PHẢI: nội dung chính -->
+            <section class="content-area" aria-label="Danh sách lệnh sản xuất">
+
+                <div class="toolbar">
+                    <input class="search" type="search" placeholder="Tìm mã lệnh, tên sản phẩm…" aria-label="Tìm kiếm lệnh sản xuất">
+                    <div class="view-switch" role="group" aria-label="Chế độ hiển thị">
+                        <label class="chip" for="view-grid">▦ Lưới</label>
+                        <label class="chip" for="view-list">☰ Danh sách</label>
+                    </div>
+                </div>
+
+                <!-- THẺ ĐỀ CỬ LẬT 3D: rê chuột (hoặc focus) để lật -->
+                <figure class="flip-wrap" tabindex="0" aria-label="Lệnh sản xuất nổi bật">
+                    <div class="flip-card">
+                        <div class="flip-front">
+                            <span class="tag hot">ƯU TIÊN</span>
+                            <h3>LSX-001 · Bàn ăn gỗ sồi</h3>
+                            <p>Đơn lớn nhất tháng 11 — rê chuột để xem chi tiết</p>
+                        </div>
+                        <div class="flip-back">
+                            <h3>Tóm tắt</h3>
+                            <p>20 bộ · Xưởng gỗ · Giao 15/11</p>
+                            <p>Tiến độ 65% · Còn thiếu sơn PU 12 lít</p>
+                        </div>
+                    </div>
+                </figure>
+
+                <!-- LƯỚI THẺ: mobile 1 cột, tablet 2 cột, desktop auto-fit -->
+                <div class="lsx-grid">
+                    <!-- Thẻ LSX-001: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="go" data-st="dang">
+                        <div class="lsx-thumb" aria-hidden="true">🍽️<span class="tag hot">HOT</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-001 · Xưởng gỗ</span>
+                            <h3>Bàn ăn gỗ sồi 6 ghế</h3>
+                            <div class="lsx-meta"><span>SL: 20 bộ</span><span>Giao: 15/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag dang">Đang SX</span><b>65%</b></div>
+                                <div class="bar"><i style="--p:65"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-001">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-001">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-002: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="boc" data-st="dang">
+                        <div class="lsx-thumb" aria-hidden="true">🛋️<span class="tag dang">Đang SX</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-002 · Xưởng bọc nệm</span>
+                            <h3>Sofa góc L vải bố</h3>
+                            <div class="lsx-meta"><span>SL: 12 bộ</span><span>Giao: 20/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag dang">Đang SX</span><b>40%</b></div>
+                                <div class="bar"><i style="--p:40"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-002">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-002">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-003: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="go" data-st="cho">
+                        <div class="lsx-thumb" aria-hidden="true">🚪<span class="tag cho">Chờ vật tư</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-003 · Xưởng gỗ</span>
+                            <h3>Tủ quần áo 4 cánh</h3>
+                            <div class="lsx-meta"><span>SL: 15 cái</span><span>Giao: 25/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag cho">Chờ vật tư</span><b>10%</b></div>
+                                <div class="bar"><i style="--p:10"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-003">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-003">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-004: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="lap" data-st="xong">
+                        <div class="lsx-thumb" aria-hidden="true">🛏️<span class="tag xong">Hoàn thành</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-004 · Lắp ráp & đóng gói</span>
+                            <h3>Giường ngủ 1m8</h3>
+                            <div class="lsx-meta"><span>SL: 30 cái</span><span>Giao: 05/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag xong">Hoàn thành</span><b>100%</b></div>
+                                <div class="bar"><i style="--p:100"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-004">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-004">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-005: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="son" data-st="dang">
+                        <div class="lsx-thumb" aria-hidden="true">📺<span class="tag dang">Đang SX</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-005 · Xưởng sơn</span>
+                            <h3>Kệ TV treo tường</h3>
+                            <div class="lsx-meta"><span>SL: 25 cái</span><span>Giao: 12/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag dang">Đang SX</span><b>80%</b></div>
+                                <div class="bar"><i style="--p:80"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-005">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-005">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-006: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="lap" data-st="dang">
+                        <div class="lsx-thumb" aria-hidden="true">💺<span class="tag hot">HOT</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-006 · Lắp ráp & đóng gói</span>
+                            <h3>Ghế văn phòng ergonomic</h3>
+                            <div class="lsx-meta"><span>SL: 100 cái</span><span>Giao: 30/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag dang">Đang SX</span><b>55%</b></div>
+                                <div class="bar"><i style="--p:55"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-006">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-006">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-007: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="son" data-st="cho">
+                        <div class="lsx-thumb" aria-hidden="true">🖥️<span class="tag cho">Chờ vật tư</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-007 · Xưởng sơn</span>
+                            <h3>Bàn làm việc chữ L</h3>
+                            <div class="lsx-meta"><span>SL: 18 cái</span><span>Giao: 28/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag cho">Chờ vật tư</span><b>5%</b></div>
+                                <div class="bar"><i style="--p:5"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-007">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-007">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Thẻ LSX-008: data-cat / data-st là "nhãn" để CSS :has() lọc -->
+                    <article class="card lsx-card" data-cat="go" data-st="xong">
+                        <div class="lsx-thumb" aria-hidden="true">🍳<span class="tag xong">Hoàn thành</span></div>
+                        <div class="lsx-body">
+                            <span class="lsx-code">LSX-008 · Xưởng gỗ</span>
+                            <h3>Tủ bếp trên dưới</h3>
+                            <div class="lsx-meta"><span>SL: 8 bộ</span><span>Giao: 02/11/2026</span></div>
+                            <!-- Thanh tiến độ: --p = % hoàn thành -->
+                            <div class="bar-row">
+                                <div class="bar-label"><span class="tag xong">Hoàn thành</span><b>100%</b></div>
+                                <div class="bar"><i style="--p:100"></i></div>
+                            </div>
+                            <div class="lsx-actions">
+                                <a class="btn btn-outline" href="#lsx-008">Xem nhanh</a>
+                                <a class="btn btn-dark" href="#lsx-008">Chi tiết</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <!-- BANNER PARALLAX -->
+        <section class="parallax" aria-labelledby="para-title">
+            <div class="container">
+                <h2 id="para-title">Cần mở thêm lệnh sản xuất?</h2>
+                <p>Tạo lệnh từ đơn hàng, hệ thống tự tính vật tư theo BOM.</p>
+                <a class="btn btn-primary" href="#">Tạo lệnh mới</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal LSX-001: mở bằng :target khi URL có #lsx-001 -->
+    <div class="modal" id="lsx-001" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-001">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>🍽️ LSX-001 · Bàn ăn gỗ sồi 6 ghế</h3>
+            <span class="tag dang">Đang SX</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Xưởng gỗ</dd>
+                <dt>Số lượng</dt><dd>20 bộ</dd>
+                <dt>Hạn giao</dt><dd>15/11/2026</dd>
+                <dt>Tiến độ</dt><dd>65%</dd>
+                <dt>Vật tư (BOM)</dt><dd>Gỗ sồi 18 m³, sơn PU 40 lít</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-002: mở bằng :target khi URL có #lsx-002 -->
+    <div class="modal" id="lsx-002" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-002">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>🛋️ LSX-002 · Sofa góc L vải bố</h3>
+            <span class="tag dang">Đang SX</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Xưởng bọc nệm</dd>
+                <dt>Số lượng</dt><dd>12 bộ</dd>
+                <dt>Hạn giao</dt><dd>20/11/2026</dd>
+                <dt>Tiến độ</dt><dd>40%</dd>
+                <dt>Vật tư (BOM)</dt><dd>Khung gỗ, mút D40, vải bố 90 m</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-003: mở bằng :target khi URL có #lsx-003 -->
+    <div class="modal" id="lsx-003" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-003">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>🚪 LSX-003 · Tủ quần áo 4 cánh</h3>
+            <span class="tag cho">Chờ vật tư</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Xưởng gỗ</dd>
+                <dt>Số lượng</dt><dd>15 cái</dd>
+                <dt>Hạn giao</dt><dd>25/11/2026</dd>
+                <dt>Tiến độ</dt><dd>10%</dd>
+                <dt>Vật tư (BOM)</dt><dd>MDF chống ẩm 60 tấm, bản lề giảm chấn</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-004: mở bằng :target khi URL có #lsx-004 -->
+    <div class="modal" id="lsx-004" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-004">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>🛏️ LSX-004 · Giường ngủ 1m8</h3>
+            <span class="tag xong">Hoàn thành</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Lắp ráp & đóng gói</dd>
+                <dt>Số lượng</dt><dd>30 cái</dd>
+                <dt>Hạn giao</dt><dd>05/11/2026</dd>
+                <dt>Tiến độ</dt><dd>100%</dd>
+                <dt>Vật tư (BOM)</dt><dd>Gỗ cao su, ray, đinh vít</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-005: mở bằng :target khi URL có #lsx-005 -->
+    <div class="modal" id="lsx-005" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-005">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>📺 LSX-005 · Kệ TV treo tường</h3>
+            <span class="tag dang">Đang SX</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Xưởng sơn</dd>
+                <dt>Số lượng</dt><dd>25 cái</dd>
+                <dt>Hạn giao</dt><dd>12/11/2026</dd>
+                <dt>Tiến độ</dt><dd>80%</dd>
+                <dt>Vật tư (BOM)</dt><dd>MDF phủ melamine, sơn PU bóng</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-006: mở bằng :target khi URL có #lsx-006 -->
+    <div class="modal" id="lsx-006" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-006">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>💺 LSX-006 · Ghế văn phòng ergonomic</h3>
+            <span class="tag dang">Đang SX</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Lắp ráp & đóng gói</dd>
+                <dt>Số lượng</dt><dd>100 cái</dd>
+                <dt>Hạn giao</dt><dd>30/11/2026</dd>
+                <dt>Tiến độ</dt><dd>55%</dd>
+                <dt>Vật tư (BOM)</dt><dd>Khung thép, lưới, piston, bánh xe</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-007: mở bằng :target khi URL có #lsx-007 -->
+    <div class="modal" id="lsx-007" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-007">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>🖥️ LSX-007 · Bàn làm việc chữ L</h3>
+            <span class="tag cho">Chờ vật tư</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Xưởng sơn</dd>
+                <dt>Số lượng</dt><dd>18 cái</dd>
+                <dt>Hạn giao</dt><dd>28/11/2026</dd>
+                <dt>Tiến độ</dt><dd>5%</dd>
+                <dt>Vật tư (BOM)</dt><dd>Gỗ MFC, chân sắt sơn tĩnh điện</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+    <!-- Modal LSX-008: mở bằng :target khi URL có #lsx-008 -->
+    <div class="modal" id="lsx-008" role="dialog" aria-modal="true" aria-label="Chi tiết LSX-008">
+        <div class="modal-box">
+            <a class="modal-close" href="#" aria-label="Đóng">✕</a>
+            <h3>🍳 LSX-008 · Tủ bếp trên dưới</h3>
+            <span class="tag xong">Hoàn thành</span>
+            <dl>
+                <dt>Xưởng</dt><dd>Xưởng gỗ</dd>
+                <dt>Số lượng</dt><dd>8 bộ</dd>
+                <dt>Hạn giao</dt><dd>02/11/2026</dd>
+                <dt>Tiến độ</dt><dd>100%</dd>
+                <dt>Vật tư (BOM)</dt><dd>Gỗ công nghiệp, mặt đá, ray hộp</dd>
+            </dl>
+            <a class="btn btn-primary" href="#">Đóng cửa sổ</a>
+        </div>
+    </div>
+
+    <!-- Nút nổi FAB -->
+    <a class="fab" href="#" aria-label="Tạo lệnh sản xuất mới" title="Tạo lệnh mới">+</a>
+
+    <footer>
+        <div class="container footer-inner">
+            <p>© 2026 WoodERP · Nhóm 15 · Học phần Thiết kế Web</p>
+            <nav class="footer-links" aria-label="Liên kết chân trang">
+                <a href="trangchu.html">Tổng quan</a>
+                <a href="sanxuat.html">Lệnh sản xuất</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>
