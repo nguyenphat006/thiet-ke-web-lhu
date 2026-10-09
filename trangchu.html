@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!-- lang="vi": báo trình duyệt/screen reader đây là tiếng Việt -->
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <!-- viewport: bắt buộc để responsive trên điện thoại (Tuần 4) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WoodERP — Hệ thống ERP quản lý sản xuất đồ nội thất: kế hoạch, kho vật tư, xưởng, giao hàng.">
+    <title>Tổng quan — WoodERP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Skip link: người dùng bàn phím nhấn Tab để nhảy thẳng tới nội dung -->
+    <a class="skip-link" href="#main-content">Chuyển đến nội dung chính</a>
+
+    <!-- HEADER: checkbox → label → nav phải là anh em liền kề để dùng bộ chọn ~ -->
+    <div class="header-wrapper">
+        <header>
+            <div class="container header-inner">
+                <a class="brand" href="trangchu.html" aria-label="WoodERP — Về trang chủ">
+                    <span class="brand-name">Wood<span>ERP</span></span>
+                    <span class="brand-tagline">Furniture Manufacturing Suite</span>
+                </a>
+                <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+                <label for="nav-toggle" class="nav-toggle-label" aria-label="Mở / đóng menu">
+                    <span></span><span></span><span></span>
+                </label>
+                <nav class="main-nav" aria-label="Điều hướng chính">
+                    <ul>
+                        <li><a href="trangchu.html" aria-current="page">Tổng quan</a></li>
+                        <li><a href="sanxuat.html">Lệnh sản xuất</a></li>
+                        <li><a href="#kho-vat-tu">Kho vật tư</a></li>
+                        <li><a href="#don-hang">Đơn hàng</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    </div>
+
+    <main id="main-content">
+
+        <!-- SECTION 1: HERO + typing + thanh KPI (Flexbox) -->
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="container hero-inner">
+                <span class="hero-badge">Hệ thống đang hoạt động · Xưởng Bình Dương</span>
+                <h1 id="hero-title">Điều hành xưởng nội thất<br><span class="typing">từ đơn hàng đến giao hàng.</span></h1>
+                <p>WoodERP gom kế hoạch sản xuất, định mức vật tư, tiến độ từng xưởng và giao hàng vào một màn hình duy nhất.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="sanxuat.html">Xem lệnh sản xuất</a>
+                    <a class="btn btn-ghost" href="#quy-trinh">Quy trình 5 bước</a>
+                </div>
+                <!-- Flex: các ô KPI tự xuống dòng khi màn hình hẹp -->
+                <div class="kpi-bar" aria-label="Chỉ số nhanh">
+                    <div class="kpi"><strong>128</strong><span>Lệnh SX trong tháng</span></div>
+                    <div class="kpi"><strong>94%</strong><span>Đúng hạn giao</span></div>
+                    <div class="kpi"><strong>312 m³</strong><span>Gỗ tồn kho</span></div>
+                    <div class="kpi"><strong>4</strong><span>Xưởng đang chạy</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Các phân hệ ERP — CSS Grid auto-fit (Tuần 3) -->
+        <section class="section" aria-labelledby="modules-title">
+            <div class="container">
+                <div class="section-head">
+                    <h2 id="modules-title">Các phân hệ ERP</h2>
+                    <p>Lưới tự chia cột: <code>repeat(auto-fit, minmax(250px, 1fr))</code>.</p>
+                </div>
+                <div class="grid-auto">
+                    <article class="card">
+                        <div class="icon" aria-hidden="true">📋</div>
+                        <h3>Kế hoạch sản xuất</h3>
+                        <p>Lập lệnh sản xuất (LSX) từ đơn hàng, cân đối năng lực từng xưởng.</p>
+                        <a class="link-more" href="sanxuat.html">Mở phân hệ →</a>
+                    </article>
+                    <article class="card">
+                        <div class="icon" aria-hidden="true">🪵</div>
+                        <h3>Kho vật tư</h3>
+                        <p>Gỗ, ván MDF, vải, mút, phụ kiện — cảnh báo khi dưới mức tồn tối thiểu.</p>
+                        <a class="link-more" href="#kho-vat-tu">Xem tồn kho →</a>
+                    </article>
+                    <article class="card">
+                        <div class="icon" aria-hidden="true">🧮</div>
+                        <h3>Định mức BOM</h3>
+                        <p>Bảng định mức nguyên vật liệu cho từng mã sản phẩm, tính hao hụt tự động.</p>
+                        <a class="link-more" href="sanxuat.html">Xem BOM →</a>
+                    </article>
+                    <article class="card">
+                        <div class="icon" aria-hidden="true">🏭</div>
+                        <h3>Điều độ xưởng</h3>
+                        <p>Theo dõi tiến độ Xưởng gỗ, Bọc nệm, Sơn, Lắp ráp theo thời gian thực.</p>
+                        <a class="link-more" href="sanxuat.html">Xem tiến độ →</a>
+                    </article>
+                    <article class="card">
+                        <div class="icon" aria-hidden="true">✅</div>
+                        <h3>Kiểm soát chất lượng</h3>
+                        <p>Phiếu QC từng công đoạn, ghi nhận lỗi và tỷ lệ làm lại.</p>
+                        <a class="link-more" href="#quy-trinh">Quy trình QC →</a>
+                    </article>
+                    <article class="card">
+                        <div class="icon" aria-hidden="true">🚚</div>
+                        <h3>Giao hàng</h3>
+                        <p>Đóng gói, xếp xe, theo dõi lịch giao và xác nhận khách nhận hàng.</p>
+                        <a class="link-more" href="#don-hang">Xem đơn hàng →</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Quy trình 5 bước — Grid 1 → 2 → 5 cột (responsive) -->
+        <section class="section" id="quy-trinh" aria-labelledby="flow-title">
+            <div class="container">
+                <div class="section-head">
+                    <h2 id="flow-title">Quy trình sản xuất 5 bước</h2>
+                </div>
+                <ol class="steps">
+                    <li class="step"><h3>Nhận đơn</h3><p>Xác nhận mẫu mã, kích thước, ngày giao.</p></li>
+                    <li class="step"><h3>Xuất vật tư</h3><p>Theo BOM, trừ kho tự động.</p></li>
+                    <li class="step"><h3>Gia công</h3><p>Cắt, ghép, bọc nệm tại các xưởng.</p></li>
+                    <li class="step"><h3>Sơn &amp; QC</h3><p>Sơn hoàn thiện, kiểm tra chất lượng.</p></li>
+                    <li class="step"><h3>Giao hàng</h3><p>Đóng gói, vận chuyển, nghiệm thu.</p></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Kho vật tư + Đơn hàng — Grid 2 cột trên desktop -->
+        <section class="section" aria-label="Kho vật tư và đơn hàng">
+            <div class="container panel-2col">
+                <aside class="panel" id="kho-vat-tu" aria-labelledby="stock-title">
+                    <h3 id="stock-title">Tồn kho vật tư (% so với mức an toàn)</h3>
+                    <!-- --p là số %; CSS dùng scaleX(var(--p)/100) rồi animation chạy từ 0 -->
+                    <div class="bar-row"><div class="bar-label"><span>Gỗ sồi</span><b>82%</b></div><div class="bar"><i style="--p:82"></i></div></div>
+                    <div class="bar-row"><div class="bar-label"><span>Ván MDF</span><b>64%</b></div><div class="bar"><i style="--p:64"></i></div></div>
+                    <div class="bar-row"><div class="bar-label"><span>Vải bọc</span><b>35%</b></div><div class="bar low"><i style="--p:35"></i></div></div>
+                    <div class="bar-row"><div class="bar-label"><span>Sơn PU</span><b>22% — cần đặt thêm</b></div><div class="bar low"><i style="--p:22"></i></div></div>
+                    <div class="bar-row"><div class="bar-label"><span>Phụ kiện (bản lề, ray)</span><b>71%</b></div><div class="bar"><i style="--p:71"></i></div></div>
+                </aside>
+
+                <section class="panel" id="don-hang" aria-labelledby="order-title">
+                    <h3 id="order-title">Đơn hàng gần đây</h3>
+                    <div class="order-list">
+                        <div class="order-item"><b>DH-2041 · Bàn ăn sồi</b><small>Cty Nội thất An Phú</small><span class="tag dang">Đang SX</span></div>
+                        <div class="order-item"><b>DH-2040 · Sofa góc L</b><small>Chị Lan — Q.7</small><span class="tag dang">Đang SX</span></div>
+                        <div class="order-item"><b>DH-2039 · Tủ bếp</b><small>Biệt thự Thảo Điền</small><span class="tag cho">Chờ vật tư</span></div>
+                        <div class="order-item"><b>DH-2038 · Giường 1m8</b><small>Khách sạn Sao Mai</small><span class="tag xong">Hoàn thành</span></div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CTA -->
+        <section class="section cta" aria-labelledby="cta-title">
+            <div class="container">
+                <h2 id="cta-title">Sẵn sàng theo dõi lệnh sản xuất?</h2>
+                <p>Lọc theo xưởng, trạng thái và xem tiến độ từng lệnh.</p>
+                <a class="btn btn-primary" href="sanxuat.html">Vào trang lệnh sản xuất</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-inner">
+            <p>© 2026 WoodERP · Nhóm 15 · Học phần Thiết kế Web</p>
+            <nav class="footer-links" aria-label="Liên kết chân trang">
+                <a href="trangchu.html">Tổng quan</a>
+                <a href="sanxuat.html">Lệnh sản xuất</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

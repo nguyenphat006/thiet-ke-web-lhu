@@ -1,0 +1,494 @@
+/* ============================================================
+   style.css — WoodERP Design System
+   Đề tài: Hệ thống ERP quản lý sản xuất đồ nội thất
+   Dùng chung cho: trangchu.html & sanxuat.html
+   Mobile-First | Zero JavaScript | CSS Grid + Flexbox
+   ============================================================ */
+
+/* ============================================================
+   1. DESIGN SYSTEM — BIẾN CSS TẠI :root (Tuần 4)
+   Mọi màu / khoảng cách / font / bóng đổ đặt tên một lần,
+   dùng lại nhiều nơi bằng var(--ten-bien).
+   ============================================================ */
+:root {
+    /* --- Màu thương hiệu: tông gỗ óc chó + hổ phách --- */
+    --color-primary:       #8B5A2B;   /* nâu gỗ óc chó */
+    --color-primary-dark:  #5D3A1A;   /* nâu đậm */
+    --color-accent:        #D97706;   /* hổ phách (nút nhấn) */
+    --color-background:    #FAF6F1;   /* kem nhạt */
+    --color-surface:       #FFFFFF;
+    --color-text:          #2B1D12;
+    --color-text-muted:    #7A6A5C;
+    --color-border:        #E8DDD0;
+    --color-header-bg:     #2B1D12;
+    --color-header-text:   #F7EFE5;
+    --color-footer-bg:     #1A110A;
+    --color-footer-text:   #B8A794;
+
+    /* --- Màu trạng thái / xưởng --- */
+    --color-go:    #8B5A2B;   /* Xưởng gỗ */
+    --color-boc:   #7C3AED;   /* Xưởng bọc nệm */
+    --color-son:   #0E7490;   /* Xưởng sơn */
+    --color-lap:   #4D7C0F;   /* Lắp ráp & đóng gói */
+    --color-ok:    #15803D;
+    --color-warn:  #B45309;
+    --color-info:  #1D4ED8;
+
+    /* --- Khoảng cách --- */
+    --space-xs: 4px;  --space-sm: 8px;  --space-md: 16px;
+    --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px; --space-3xl: 72px;
+
+    /* --- Typography (đơn vị rem để co giãn theo người dùng) --- */
+    --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --fs-xs: 0.75rem; --fs-sm: 0.875rem; --fs-md: 1rem;
+    --fs-lg: 1.125rem; --fs-xl: 1.25rem; --fs-2xl: 1.5rem; --fs-3xl: 2rem;
+
+    /* --- Bo góc & bóng đổ --- */
+    --radius-sm: 6px; --radius-md: 12px; --radius-lg: 20px; --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(43, 29, 18, .12);
+    --shadow-md: 0 6px 14px rgba(43, 29, 18, .12);
+    --shadow-lg: 0 16px 32px rgba(43, 29, 18, .20);
+
+    /* --- Đường cong gia tốc tùy chỉnh (Tuần 5, mục B) --- */
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);   /* nảy đàn hồi */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);        /* êm, dừng mềm */
+
+    --container-max: 1200px;
+}
+
+/* ============================================================
+   2. RESET & BASE
+   box-sizing: border-box → width đã gồm padding + border (Box Model)
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font-family);
+    font-size: var(--fs-md);
+    line-height: 1.55;
+    color: var(--color-text);
+    background: var(--color-background);
+    overflow-x: hidden;                 /* chống tràn ngang */
+}
+img, svg { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+h1, h2, h3 { line-height: 1.2; }
+
+.container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--space-md);
+}
+.visually-hidden, .ctrl {               /* ẩn trực quan nhưng vẫn đọc được bằng screen reader */
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+}
+.skip-link {
+    position: absolute; left: 8px; top: -60px; z-index: 999;
+    background: var(--color-accent); color: #fff;
+    padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm);
+}
+.skip-link:focus { top: 8px; }
+:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+
+/* ============================================================
+   3. HEADER + MENU HAMBURGER THUẦN CSS (Tuần 5 – Bài 5)
+   Cấu trúc anh em: checkbox → label → nav (dùng bộ chọn ~)
+   ============================================================ */
+.header-wrapper {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--color-header-bg); color: var(--color-header-text);
+    box-shadow: var(--shadow-md);
+}
+.header-inner {
+    display: flex; align-items: center; justify-content: space-between;  /* Flexbox */
+    min-height: 60px; gap: var(--space-md);
+}
+.brand { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-name { font-size: var(--fs-2xl); font-weight: 800; }
+.brand-name span { color: var(--color-accent); }
+.brand-tagline { display: none; font-size: var(--fs-xs); color: var(--color-footer-text); }
+
+.nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
+.nav-toggle-label {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 44px; height: 44px; padding: 10px; cursor: pointer;
+}
+.nav-toggle-label span {
+    display: block; height: 3px; background: var(--color-header-text);
+    border-radius: 2px;
+    transition: transform .35s var(--ease-smooth), opacity .25s var(--ease-smooth);
+}
+/* Khi tick: gạch 1 xoay 45°, gạch 2 mờ đi, gạch 3 xoay -45° → thành dấu X */
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) { opacity: 0; }
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+nav.main-nav {
+    position: absolute; left: 0; right: 0; top: 100%;
+    background: var(--color-header-bg);
+    transform: scaleY(0); transform-origin: top; opacity: 0;   /* ẩn bằng transform: GPU */
+    transition: transform .35s var(--ease-smooth), opacity .25s var(--ease-smooth);
+}
+.nav-toggle:checked ~ nav.main-nav { transform: scaleY(1); opacity: 1; }
+nav.main-nav ul { display: flex; flex-direction: column; padding: var(--space-sm) var(--space-md); }
+nav.main-nav a {
+    display: block; padding: 12px var(--space-md);
+    border-radius: var(--radius-sm); transition: background .2s;
+}
+nav.main-nav a:hover { background: rgba(255, 255, 255, .12); }
+nav.main-nav a[aria-current="page"] { background: var(--color-accent); color: #fff; }
+
+/* ============================================================
+   4. HERO + TYPING EFFECT (Tuần 5 – Bài 3)
+   ============================================================ */
+.hero {
+    color: #fff;
+    background:
+        linear-gradient(135deg, rgba(43, 29, 18, .92), rgba(139, 90, 43, .85)),
+        repeating-linear-gradient(90deg, #5D3A1A 0 14px, #6b4423 14px 28px);
+    padding-block: var(--space-2xl);
+    animation: fadeInUp .7s var(--ease-smooth) both;
+}
+.hero-inner { display: flex; flex-direction: column; gap: var(--space-lg); }
+.hero-badge {
+    align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 255, 255, .15); padding: 6px 14px;
+    border-radius: var(--radius-full); font-size: var(--fs-sm);
+}
+.hero-badge::before {                 /* chấm xanh nhịp đập */
+    content: ""; width: 10px; height: 10px; border-radius: 50%;
+    background: #4ADE80; animation: pulseGlow 1.8s infinite;
+}
+.hero h1 { font-size: 1.75rem; }
+.typing {                             /* chữ hiện dần từng ký tự */
+    display: inline-block; color: #FCD34D; font-weight: 700;
+    border-right: 3px solid #FCD34D;
+    animation: typing 3.6s steps(32) 0.4s both infinite alternate,
+               caret .8s step-end infinite;
+}
+.hero p { max-width: 60ch; color: #F1E6D8; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-md); }
+
+/* Nút bấm */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 22px; border-radius: var(--radius-full);
+    font-weight: 700; font-size: var(--fs-sm); cursor: pointer; border: 2px solid transparent;
+    transition: transform .3s var(--ease-bounce), box-shadow .3s var(--ease-smooth);
+    will-change: transform;
+}
+.btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: var(--shadow-md); }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--color-accent); color: #fff; }
+.btn-ghost { border-color: rgba(255, 255, 255, .6); color: #fff; }
+.btn-dark { background: var(--color-primary-dark); color: #fff; }
+.btn-outline { border-color: var(--color-primary); color: var(--color-primary); background: transparent; }
+
+/* ============================================================
+   5. KHỐI NỘI DUNG CHUNG
+   ============================================================ */
+.section { padding-block: var(--space-2xl); }
+.section-head { margin-bottom: var(--space-lg); }
+.section-head h2 { font-size: var(--fs-2xl); color: var(--color-primary-dark); }
+.section-head p { color: var(--color-text-muted); }
+
+/* --- Thanh KPI: Flexbox, tự xuống dòng khi hẹp --- */
+.kpi-bar { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-md); }
+.kpi {
+    flex: 1 1 140px;                  /* tối thiểu 140px, giãn đều phần dư */
+    background: rgba(255, 255, 255, .12); border-radius: var(--radius-md);
+    padding: var(--space-md); display: flex; flex-direction: column; gap: 2px;
+}
+.kpi strong { font-size: var(--fs-2xl); }
+.kpi span { font-size: var(--fs-sm); color: #E8D8C4; }
+
+/* --- Lưới module ERP: Grid auto-fit (Tuần 3) --- */
+.grid-auto {
+    display: grid; gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.card {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+    padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-sm);
+    transition: transform .35s var(--ease-bounce), box-shadow .35s var(--ease-smooth);
+    will-change: transform;
+    animation: fadeInUp .6s var(--ease-smooth) both;
+}
+.card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.card:hover .icon { transform: rotate(-6deg) scale(1.1); }
+.grid-auto .card:nth-child(2) { animation-delay: .08s; }
+.grid-auto .card:nth-child(3) { animation-delay: .16s; }
+.grid-auto .card:nth-child(4) { animation-delay: .24s; }
+.grid-auto .card:nth-child(5) { animation-delay: .32s; }
+.grid-auto .card:nth-child(6) { animation-delay: .40s; }
+.icon {
+    width: 52px; height: 52px; border-radius: var(--radius-md);
+    display: grid; place-items: center; font-size: 1.6rem;   /* Grid căn giữa */
+    background: #F3E6D4; transition: transform .35s var(--ease-bounce);
+}
+.card h3 { font-size: var(--fs-lg); color: var(--color-primary-dark); }
+.card p { color: var(--color-text-muted); font-size: var(--fs-sm); }
+.link-more { margin-top: auto; font-weight: 700; color: var(--color-accent); }
+
+/* --- Quy trình sản xuất: Grid, mobile 1 cột → desktop 5 cột --- */
+.steps { display: grid; gap: var(--space-md); grid-template-columns: 1fr; counter-reset: step; }
+.step {
+    position: relative; background: var(--color-surface);
+    border-left: 5px solid var(--color-primary); border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-md) var(--space-md) var(--space-xl);
+    box-shadow: var(--shadow-sm); counter-increment: step;
+}
+.step::before {
+    content: counter(step); position: absolute; left: -16px; top: 12px;
+    width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--color-primary); color: #fff; font-weight: 700; font-size: var(--fs-sm);
+}
+.step h3 { font-size: var(--fs-md); }
+.step p { font-size: var(--fs-sm); color: var(--color-text-muted); }
+
+/* --- Tồn kho & tiến độ: thanh progress (Tuần 5 – Bài 6) --- */
+.panel-2col { display: grid; gap: var(--space-lg); grid-template-columns: 1fr; }
+.panel {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: var(--space-lg); box-shadow: var(--shadow-sm);
+}
+.panel h3 { margin-bottom: var(--space-md); color: var(--color-primary-dark); }
+.bar-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--space-md); }
+.bar-label { display: flex; justify-content: space-between; font-size: var(--fs-sm); }
+.bar {
+    height: 12px; background: #EFE4D6; border-radius: var(--radius-full); overflow: hidden;
+}
+.bar > i {
+    display: block; height: 100%; width: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transform-origin: left center;
+    transform: scaleX(calc(var(--p) / 100));          /* --p đặt inline: style="--p:65" */
+    animation: fillBar 1.4s var(--ease-smooth) both;  /* chạy từ 0 → giá trị thật */
+}
+.bar.low > i { background: linear-gradient(90deg, #DC2626, #F59E0B); }
+
+/* --- Bảng đơn hàng dạng Flex (không dùng <table> để dàn trang) --- */
+.order-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+.order-item {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md);
+    padding: var(--space-sm) 0; border-bottom: 1px dashed var(--color-border);
+}
+.order-item b { flex: 1 1 140px; }
+.order-item small { color: var(--color-text-muted); flex: 1 1 100px; }
+
+/* --- Nhãn trạng thái --- */
+.tag {
+    display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
+    font-size: var(--fs-xs); font-weight: 700; color: #fff; background: var(--color-text-muted);
+}
+.tag.dang { background: var(--color-info); }
+.tag.cho  { background: var(--color-warn); }
+.tag.xong { background: var(--color-ok); }
+.tag.hot  { background: #DC2626; }
+
+/* --- CTA --- */
+.cta { background: var(--color-primary-dark); color: #fff; text-align: center; }
+.cta .container { display: flex; flex-direction: column; align-items: center; gap: var(--space-md); }
+
+/* ============================================================
+   6. FOOTER
+   ============================================================ */
+footer { background: var(--color-footer-bg); color: var(--color-footer-text); padding-block: var(--space-xl); }
+.footer-inner { display: flex; flex-direction: column; gap: var(--space-md); }
+.footer-links { display: flex; flex-wrap: wrap; gap: var(--space-md); }
+.footer-links a:hover { color: #fff; }
+
+/* ============================================================
+   7. TRANG SẢN XUẤT — BỐ CỤC 2 CỘT (Grid) + BỘ LỌC ZERO-JS
+   Mobile: 1 cột; Desktop: cột lọc 280px + nội dung 1fr
+   ============================================================ */
+.layout { display: grid; gap: var(--space-lg); grid-template-columns: 1fr; align-items: start; padding-block: var(--space-xl); }
+.filter-panel {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: var(--space-lg); box-shadow: var(--shadow-sm);
+}
+.filter-group { border: 0; margin-bottom: var(--space-lg); }
+.filter-group legend { font-weight: 800; color: var(--color-primary-dark); margin-bottom: var(--space-sm); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.chip {
+    padding: 8px 14px; border-radius: var(--radius-full); cursor: pointer;
+    border: 1px solid var(--color-border); font-size: var(--fs-sm); background: #fff;
+    transition: transform .3s var(--ease-bounce), background .2s, color .2s;
+}
+.chip:hover { transform: translateX(4px); }
+
+/* Radio ẩn (class .ctrl) đặt ngay đầu <body>. Chip "sáng lên" nhờ :has() */
+body:has(#cat-all:checked)  label[for="cat-all"],
+body:has(#cat-go:checked)   label[for="cat-go"],
+body:has(#cat-boc:checked)  label[for="cat-boc"],
+body:has(#cat-son:checked)  label[for="cat-son"],
+body:has(#cat-lap:checked)  label[for="cat-lap"],
+body:has(#st-all:checked)   label[for="st-all"],
+body:has(#st-dang:checked)  label[for="st-dang"],
+body:has(#st-cho:checked)   label[for="st-cho"],
+body:has(#st-xong:checked)  label[for="st-xong"],
+body:has(#view-grid:checked) label[for="view-grid"],
+body:has(#view-list:checked) label[for="view-list"] {
+    background: var(--color-primary); color: #fff; border-color: var(--color-primary);
+}
+
+/* LỌC: ẩn thẻ KHÔNG khớp giá trị đang chọn. Hai nhóm lọc độc lập → tự kết hợp (AND). */
+body:has(#cat-go:checked)  .lsx-card:not([data-cat="go"]),
+body:has(#cat-boc:checked) .lsx-card:not([data-cat="boc"]),
+body:has(#cat-son:checked) .lsx-card:not([data-cat="son"]),
+body:has(#cat-lap:checked) .lsx-card:not([data-cat="lap"]),
+body:has(#st-dang:checked) .lsx-card:not([data-st="dang"]),
+body:has(#st-cho:checked)  .lsx-card:not([data-st="cho"]),
+body:has(#st-xong:checked) .lsx-card:not([data-st="xong"]) { display: none; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.search {
+    flex: 1 1 220px; padding: 10px 16px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-full); font: inherit; background: #fff;
+}
+.view-switch { display: flex; gap: var(--space-sm); }
+
+/* --- Thẻ lệnh sản xuất --- */
+.lsx-grid { display: grid; gap: var(--space-lg); grid-template-columns: 1fr; }   /* mobile 1 cột */
+.lsx-card { padding: 0; overflow: hidden; gap: 0; }
+.lsx-thumb {
+    height: 110px; display: grid; place-items: center; font-size: 3rem; position: relative;
+    background: var(--c, var(--color-go)); color: #fff;
+}
+.lsx-thumb .tag { position: absolute; top: 10px; right: 10px; }
+.lsx-body { padding: var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm); flex: 1; }
+.lsx-code { font-size: var(--fs-xs); color: var(--color-text-muted); letter-spacing: .06em; }
+.lsx-meta { display: flex; justify-content: space-between; gap: var(--space-sm); font-size: var(--fs-sm); color: var(--color-text-muted); }
+.lsx-actions { display: flex; gap: var(--space-sm); margin-top: auto; }
+.lsx-actions .btn { flex: 1; padding: 9px 12px; }
+.lsx-card[data-cat="go"]  { --c: var(--color-go); }
+.lsx-card[data-cat="boc"] { --c: var(--color-boc); }
+.lsx-card[data-cat="son"] { --c: var(--color-son); }
+.lsx-card[data-cat="lap"] { --c: var(--color-lap); }
+
+/* Chế độ DANH SÁCH: đổi 1 dòng grid + card thành hàng ngang */
+body:has(#view-list:checked) .lsx-grid { grid-template-columns: 1fr; }
+body:has(#view-list:checked) .lsx-card { flex-direction: row; }
+body:has(#view-list:checked) .lsx-thumb { width: 90px; height: auto; flex: none; font-size: 2rem; }
+body:has(#view-list:checked) .lsx-thumb .tag { display: none; }
+
+/* --- Thẻ đề cử lật 3D (Tuần 5 – Bài 2) --- */
+.flip-wrap { perspective: 1000px; max-width: 420px; margin-bottom: var(--space-xl); }
+.flip-card {
+    position: relative; height: 200px; transform-style: preserve-3d;
+    transition: transform .8s var(--ease-bounce);
+}
+.flip-wrap:hover .flip-card, .flip-wrap:focus-within .flip-card { transform: rotateY(180deg); }
+.flip-front, .flip-back {
+    position: absolute; inset: 0; border-radius: var(--radius-md); padding: var(--space-lg);
+    display: flex; flex-direction: column; justify-content: center; gap: var(--space-sm);
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+    box-shadow: var(--shadow-md);
+}
+.flip-front { background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); color: #fff; }
+.flip-back { background: var(--color-surface); border: 2px solid var(--color-accent); transform: rotateY(180deg); }
+
+/* --- Modal xem trước bằng :target (không JS) --- */
+.modal {
+    position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: var(--space-md);
+    background: rgba(26, 17, 10, .6); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s var(--ease-smooth);
+}
+.modal:target { opacity: 1; pointer-events: auto; }
+.modal-box {
+    background: #fff; border-radius: var(--radius-lg); padding: var(--space-xl);
+    width: min(520px, 100%); max-height: 90vh; overflow-y: auto; position: relative;
+    transform: scale(.8) translateY(30px);
+    transition: transform .45s var(--ease-bounce);
+}
+.modal:target .modal-box { transform: scale(1) translateY(0); }
+.modal-box h3 { color: var(--color-primary-dark); margin-bottom: var(--space-sm); }
+.modal-box dl { display: grid; grid-template-columns: auto 1fr; gap: 6px var(--space-md); margin: var(--space-md) 0; font-size: var(--fs-sm); }
+.modal-box dt { color: var(--color-text-muted); }
+.modal-close {
+    position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center; background: #F3E6D4; font-weight: 800;
+    transition: transform .35s var(--ease-bounce);
+}
+.modal-close:hover { transform: rotate(90deg); }
+
+/* --- Banner Parallax (Tuần 5 – Bài 4) --- */
+.parallax {
+    color: #fff; text-align: center; padding-block: var(--space-3xl);
+    background:
+        linear-gradient(rgba(43, 29, 18, .75), rgba(43, 29, 18, .75)),
+        repeating-linear-gradient(45deg, #6b4423 0 20px, #5D3A1A 20px 40px);
+    background-attachment: fixed;                     /* nền đứng yên khi cuộn */
+}
+.parallax .container { display: flex; flex-direction: column; align-items: center; gap: var(--space-md); }
+
+/* --- Nút nổi FAB (Tuần 5 – Bài 1) --- */
+.fab {
+    position: fixed; right: 20px; bottom: 20px; z-index: 150;
+    width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--color-accent); color: #fff; font-size: 1.8rem; font-weight: 700;
+    box-shadow: var(--shadow-lg);
+    animation: pulseGlow 2s infinite;
+    transition: transform .3s var(--ease-bounce);
+}
+.fab:hover { transform: scale(1.12) rotate(90deg); }
+
+/* ============================================================
+   8. KEYFRAMES — chỉ dùng transform / opacity (GPU, 60fps)
+   ============================================================ */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fillBar { from { transform: scaleX(0); } }
+@keyframes pulseGlow {
+    0%   { box-shadow: 0 0 0 0 rgba(217, 119, 6, .6); transform: scale(1); }
+    70%  { box-shadow: 0 0 0 16px rgba(217, 119, 6, 0); transform: scale(1.06); }
+    100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); transform: scale(1); }
+}
+/* Typing: dùng clip-path thay vì đổi width để tránh reflow */
+@keyframes typing { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes caret { 50% { border-color: transparent; } }
+
+/* Tôn trọng người dùng bật "giảm chuyển động" (Accessibility) */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ============================================================
+   9. RESPONSIVE — MOBILE-FIRST (Tuần 4)
+   Mặc định = điện thoại. Mở rộng dần bằng min-width.
+   ============================================================ */
+
+/* TABLET ≥ 600px: lưới 2 cột */
+@media (min-width: 600px) {
+    .hero h1 { font-size: 2.25rem; }
+    .brand-tagline { display: block; }
+    .lsx-grid { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    body:has(#view-list:checked) .lsx-grid { grid-template-columns: 1fr; }
+}
+
+/* DESKTOP ≥ 1024px: menu ngang, 2 cột chính, nhiều cột */
+@media (min-width: 1024px) {
+    .nav-toggle-label { display: none; }
+    nav.main-nav {
+        position: static; transform: none; opacity: 1; background: transparent;
+    }
+    nav.main-nav ul { flex-direction: row; padding: 0; gap: var(--space-xs); }
+    .hero { padding-block: var(--space-3xl); }
+    .hero h1 { font-size: 2.75rem; }
+    .layout { grid-template-columns: 280px 1fr; }                 /* 2 cột: lọc cố định + nội dung */
+    .filter-panel { position: sticky; top: 80px; }
+    .lsx-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    body:has(#view-list:checked) .lsx-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: repeat(5, 1fr); }
+    .panel-2col { grid-template-columns: 3fr 2fr; }
+    .footer-inner { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+
+/* In ấn: bỏ phần trang trí */
+@media print { .header-wrapper, .fab, .parallax { display: none; } }
